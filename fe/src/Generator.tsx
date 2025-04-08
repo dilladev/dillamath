@@ -13,6 +13,7 @@ export default function MathWorksheetGenerator() {
   const [allowNegatives, setAllowNegatives] = useState(false);
   const [wholeDivision, setWholeDivision] = useState(true);
   const [allowZero, setAllowZero] = useState(false);
+  const [allowOne, setAllowOne] = useState(false);
 
   // Generate an array of math problems based on user settings
   const generateProblems = () => {
@@ -29,7 +30,10 @@ export default function MathWorksheetGenerator() {
       do {
         a = Math.floor(Math.random() * (maxNumber + 1));
         b = Math.floor(Math.random() * (maxNumber + 1));
-      } while (!allowZero && (a === 0 || b === 0));
+      } while (
+        (!allowZero && (a === 0 || b === 0)) ||
+        (!allowOne && (a === 1 || b === 1))
+      );
 
       // Ensure non-negative results if subtraction and not allowing negatives
       if (operation === 'subtraction' && !allowNegatives && a < b) {
@@ -45,10 +49,9 @@ export default function MathWorksheetGenerator() {
       }
 
       // Ensures 'a' is not zero
-      if(a == 0){
+      if (a === 0) {
         i--;
-      }
-      else{
+      } else {
         problems.push({ a, b, op: ops[operation] });
       }
     }
@@ -183,6 +186,19 @@ export default function MathWorksheetGenerator() {
                 className="mr-2"
               />
               Allow Zeros in Problems
+            </label>
+          </div>
+
+          {/* Option to Allow Ones */}
+          <div>
+            <label className="block font-medium">
+              <input
+                type="checkbox"
+                checked={allowOne}
+                onChange={(e) => setAllowOne(e.target.checked)}
+                className="mr-2"
+              />
+              Allow Ones in Problems
             </label>
           </div>
 

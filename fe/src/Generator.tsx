@@ -25,14 +25,11 @@ export default function MathWorksheetGenerator() {
     };
 
     for (let i = 0; i < numQuestions; i++) {
-      let a = Math.floor(Math.random() * (maxNumber + 1));
-      let b = Math.floor(Math.random() * (maxNumber + 1));
-
-      // If zero is not allowed, ensure numbers are at least 1
-      if (!allowZero) {
-        a = Math.max(1, a);
-        b = Math.max(1, b);
-      }
+      let a, b;
+      do {
+        a = Math.floor(Math.random() * (maxNumber + 1));
+        b = Math.floor(Math.random() * (maxNumber + 1));
+      } while (!allowZero && (a === 0 || b === 0));
 
       // Ensure non-negative results if subtraction and not allowing negatives
       if (operation === 'subtraction' && !allowNegatives && a < b) {
@@ -41,13 +38,19 @@ export default function MathWorksheetGenerator() {
 
       // Adjust numbers for whole number division results if enabled
       if (operation === 'division') {
+        b = Math.max(1, b); // avoid division by zero
         if (wholeDivision) {
-          b = Math.max(1, b); // avoid division by zero
           a = a - (a % b); // make 'a' divisible by 'b'
         }
       }
 
-      problems.push({ a, b, op: ops[operation] });
+      // Ensures 'a' is not zero
+      if(a == 0){
+        i--;
+      }
+      else{
+        problems.push({ a, b, op: ops[operation] });
+      }
     }
     return problems;
   };

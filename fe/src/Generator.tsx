@@ -55,7 +55,7 @@ export default function MathWorksheetGenerator() {
   // Add worksheet header to each PDF page
   const addPageHeader = (doc) => {
     doc.setFontSize(12);
-    doc.text('Name: ________________________`', 20, 20);
+    doc.text('Name: ________________________', 20, 20);
     doc.setFontSize(12);
     doc.text(`Date: ____________`, 150, 20);
     doc.text(`Score: ______ / ${numQuestions}`, 20, 30);

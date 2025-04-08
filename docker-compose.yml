@@ -1,0 +1,10 @@
+services:
+  fe:
+    image: dilladev/dillamath:1.0
+    restart: always
+    ports:
+      - "3004:80"
+    environment:
+      - NODE_ENV=production
+
+  

@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
       viteStaticCopy({
         targets: [
           { src: '*.jpg', dest: '' },
-          { src: 'src/data.json', dest: 'assets'}
         ]
       })
     ],
@@ -19,6 +18,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       port: 3007,
-    }
+    },
+    base: "dillamath"
   }
 })

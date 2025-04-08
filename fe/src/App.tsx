@@ -6,7 +6,7 @@ function App() {
     <div
       className="min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage: `url('/background.jpg')`,
+        backgroundImage: `url('/dillamath/background.jpg')`,
       }}
     >
       <div className="bg-black/50 min-h-screen">

@@ -19,6 +19,6 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: 3007,
     },
-    base: "dillamath"
+    base: env.VITE_DEPLOY_TARGET
   }
 })

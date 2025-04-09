@@ -3,6 +3,7 @@ import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Card, CardContent } from './components/ui/card';
 import { RadioGroup, RadioGroupItem } from './components/ui/radio-group';
+import { Switch } from './components/ui/switch';
 import jsPDF from 'jspdf';
 
 export default function MathWorksheetGenerator() {
@@ -121,102 +122,75 @@ export default function MathWorksheetGenerator() {
   // UI Layout
   return (
     <div className="p-6 max-w-xl mx-auto space-y-4">
-      <h1 className="text-2xl font-bold">Math Worksheet Generator</h1>
-      <Card>
-        <CardContent className="space-y-4 p-4">
-          {/* Number of Questions Input */}
-          <div>
-            <label className="block font-medium">Number of Questions</label>
-            <Input
-              type="number"
-              value={numQuestions}
-              onChange={(e) => setNumQuestions(Number(e.target.value))}
-              min={1}
-            />
+    <h1 className="text-2xl font-bold text-center">Math Worksheet Generator</h1>
+    <Card>
+      <CardContent className="space-y-4 p-4">
+        {/* Number of Questions Input */}
+        <div>
+          <label className="block font-medium">Number of Questions</label>
+          <Input
+            type="number"
+            value={numQuestions}
+            onChange={(e) => setNumQuestions(Number(e.target.value))}
+            min={1}
+          />
+        </div>
+
+        {/* Operation Selection */}
+        <div>
+          <label className="block font-medium mb-1">Operation</label>
+          <RadioGroup value={operation} onValueChange={setOperation} className="space-y-2">
+            <RadioGroupItem value="addition" label="Addition" />
+            <RadioGroupItem value="subtraction" label="Subtraction" />
+            <RadioGroupItem value="multiplication" label="Multiplication" />
+            <RadioGroupItem value="division" label="Division" />
+          </RadioGroup>
+        </div>
+
+        {/* Conditional Option for Subtraction */}
+        {operation === 'subtraction' && (
+          <div className="flex items-center">
+            <Switch checked={allowNegatives} onCheckedChange={setAllowNegatives} />
+            <label className="font-medium">Allow Negative Answers</label>
           </div>
+        )}
 
-          {/* Operation Selection */}
-          <div>
-            <label className="block font-medium">Operation</label>
-            <RadioGroup value={operation} onValueChange={setOperation} defaultValue="addition">
-              <RadioGroupItem value="addition" label="Addition" />
-              <RadioGroupItem value="subtraction" label="Subtraction" />
-              <RadioGroupItem value="multiplication" label="Multiplication" />
-              <RadioGroupItem value="division" label="Division" />
-            </RadioGroup>
+        {/* Conditional Option for Division */}
+        {operation === 'division' && (
+          <div className="flex items-center">
+            <Switch checked={wholeDivision} onCheckedChange={setWholeDivision} />
+            <label className="font-medium">Whole Number Answers Only</label>
+            
           </div>
+        )}
 
-          {/* Conditional Option for Subtraction */}
-          {operation === 'subtraction' && (
-            <div>
-              <label className="block font-medium">
-                <input
-                  type="checkbox"
-                  checked={allowNegatives}
-                  onChange={(e) => setAllowNegatives(e.target.checked)}
-                  className="mr-2"
-                />
-                Allow Negative Answers
-              </label>
-            </div>
-          )}
+        {/* Option to Allow Zeros */}
+        <div className="flex items-center">
+          <Switch checked={allowZero} onCheckedChange={setAllowZero} />
+          <label className="font-medium">Allow Zeros in Problems</label>          
+        </div>
 
-          {/* Conditional Option for Division */}
-          {operation === 'division' && (
-            <div>
-              <label className="block font-medium">
-                <input
-                  type="checkbox"
-                  checked={wholeDivision}
-                  onChange={(e) => setWholeDivision(e.target.checked)}
-                  className="mr-2"
-                />
-                Whole Number Answers Only
-              </label>
-            </div>
-          )}
+        {/* Option to Allow Ones */}
+        <div className="flex items-center">          
+          <Switch checked={allowOne} onCheckedChange={setAllowOne} />
+          <label className="font-medium">Allow Ones in Problems</label>
+        </div>
 
-          {/* Option to Allow Zeros */}
-          <div>
-            <label className="block font-medium">
-              <input
-                type="checkbox"
-                checked={allowZero}
-                onChange={(e) => setAllowZero(e.target.checked)}
-                className="mr-2"
-              />
-              Allow Zeros in Problems
-            </label>
-          </div>
+        {/* Maximum Number Input */}
+        <div>
+          <label className="block font-medium">Largest Number</label>
+          <Input
+            type="number"
+            value={maxNumber}
+            onChange={(e) => setMaxNumber(Number(e.target.value))}
+            min={1}
+          />
+        </div>
 
-          {/* Option to Allow Ones */}
-          <div>
-            <label className="block font-medium">
-              <input
-                type="checkbox"
-                checked={allowOne}
-                onChange={(e) => setAllowOne(e.target.checked)}
-                className="mr-2"
-              />
-              Allow Ones in Problems
-            </label>
-          </div>
-
-          {/* Maximum Number Input */}
-          <div>
-            <label className="block font-medium">Largest Number</label>
-            <Input
-              type="number"
-              value={maxNumber}
-              onChange={(e) => setMaxNumber(Number(e.target.value))}
-              min={1}
-            />
-          </div>
-
-          {/* Generate PDF Button */}
-          <Button onClick={generatePDF}>Generate PDF</Button>
-        </CardContent>
-      </Card>
-    </div>
+        {/* Generate PDF Button */}
+        <Button onClick={generatePDF}>Generate PDF</Button>
+      </CardContent>
+    </Card>
+  </div>
   );
 }

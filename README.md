@@ -4,7 +4,7 @@ A simple and customizable React tool to generate printable math worksheets as PD
 
 <p align="center">
   Example at: https://dilladev.github.io/dillamath/ <br/><br/>
-  <img src="https://github.com/user-attachments/assets/df1c6319-c776-4392-9e17-96a3af71e506" alt="Centered Image" width="500" />
+  <img src="https://github.com/user-attachments/assets/58556a2a-529a-4437-8958-cb40309d7bda" alt="Centered Image" width="500" />
 </p>
 
 <p align="center">

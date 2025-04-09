@@ -19,6 +19,6 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: 3007,
     },
-    base: env.VITE_BASE
+    base: process.env.VITE_BASE
   }
 })

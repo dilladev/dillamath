@@ -1,8 +1,6 @@
 import Generator from './Generator'
 
 function App() {
-  console.log(import.meta.env.BASE);
-  //const basePath = import.meta.env.BASE_URL;
   const basePath = !import.meta.env.BASE ? `` : `${import.meta.env.BASE_URL}/` ;
 
    return (

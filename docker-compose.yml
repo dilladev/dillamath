@@ -1,6 +1,6 @@
 services:
   fe:
-    image: dilladev/dillamath:1.0.4
+    image: dilladev/dillamath:1.0.5
     restart: always
     ports:
       - "3004:80"

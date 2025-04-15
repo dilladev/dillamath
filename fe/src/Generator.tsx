@@ -16,6 +16,7 @@ export default function MathWorksheetGenerator() {
   const [allowZero, setAllowZero] = useState(false);
   const [allowOne, setAllowOne] = useState(false);
   const [multipleChoice, setMultipleChoice] = useState(false);
+  const [showBoxes, setShowBoxes] = useState(false);
 
   // Generate a unique list of math problems
   const generateProblems = () => {
@@ -128,6 +129,16 @@ export default function MathWorksheetGenerator() {
       doc.text(bStr, x + 20, y + 7, { align: 'right' });
       doc.line(x + 8, y + 10, x + colWidth - 30, y + 10);
 
+      // Show boxes around questions
+      if(showBoxes){
+        const yOffset = 7;
+        const xOffset = 5
+        doc.line(x - xOffset, y - yOffset, x + colWidth - + xOffset, y - yOffset);
+        doc.line(x + colWidth - xOffset, y - yOffset, x + colWidth - xOffset, y + rowHeight - yOffset );
+        doc.line(x + colWidth - xOffset, y + rowHeight - yOffset, x - xOffset, y + rowHeight - yOffset );
+        doc.line(x - xOffset, y + rowHeight - yOffset , x - xOffset, y - yOffset);
+      }
+
       // Draw multiple choice options with bubbles
       if (multipleChoice) {
         const choices = generateChoices(answer);
@@ -202,6 +213,11 @@ export default function MathWorksheetGenerator() {
           <div className="flex items-center">
             <Switch checked={multipleChoice} onCheckedChange={setMultipleChoice} />
             <label className="font-medium">Use Multiple Choice</label>
+          </div>
+
+          <div className="flex items-center">
+            <Switch checked={showBoxes} onCheckedChange={setShowBoxes} />
+            <label className="font-medium">Show Boxes</label>
           </div>
 
           <div>

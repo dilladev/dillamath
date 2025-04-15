@@ -2,13 +2,17 @@
 
 A simple and customizable React tool to generate printable math worksheets as PDF files. Ideal for teachers, homeschoolers, tutors, or anyone needing quick and clean practice sheets for addition, subtraction, multiplication, or division.
 
+
 <p align="center">
   Example at: https://dilladev.github.io/dillamath/ <br/><br/>
-  <img src="https://github.com/user-attachments/assets/58556a2a-529a-4437-8958-cb40309d7bda" alt="Centered Image" width="500" />
+  <img src="https://github.com/user-attachments/assets/63e5dab9-d195-4214-8ed8-f8e1289ddb25" alt="Centered Image" width="500" />
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/872a62e4-c936-4d45-81b5-4d420078bcbd" alt="Centered Image" width="500" />
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/58b3cfcf-f2ba-4cb3-8e3d-1b2001d708f3" alt="Centered Image" width="500" />
 </p>
 
 ## ✨ Features

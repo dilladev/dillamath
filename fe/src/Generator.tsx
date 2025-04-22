@@ -7,21 +7,27 @@ import { Switch } from './components/ui/switch';
 import jsPDF from 'jspdf';
 
 export default function MathWorksheetGenerator() {
-  // State variables for worksheet settings
-  const [numQuestions, setNumQuestions] = useState(10);
-  const [operation, setOperation] = useState('addition');
-  const [maxNumber, setMaxNumber] = useState(10);
-  const [allowNegatives, setAllowNegatives] = useState(false);
-  const [wholeDivision, setWholeDivision] = useState(true);
-  const [allowZero, setAllowZero] = useState(false);
-  const [allowOne, setAllowOne] = useState(false);
-  const [multipleChoice, setMultipleChoice] = useState(false);
-  const [showBoxes, setShowBoxes] = useState(false);
+  // ====== State Management ======
+  // Basic settings for worksheet configuration
+  const [numQuestions, setNumQuestions] = useState(10); // Number of questions
+  const [operation, setOperation] = useState('addition'); // Operation type: addition, subtraction, etc.
+  const [maxNumber, setMaxNumber] = useState(10); // Largest number allowed in problems
 
-  // Generate a unique list of math problems
+  // Filters and options
+  const [allowNegatives, setAllowNegatives] = useState(false); // Allow negative answers (for subtraction)
+  const [wholeDivision, setWholeDivision] = useState(true); // Require whole number division answers
+  const [allowZero, setAllowZero] = useState(false); // Allow zero in operands
+  const [allowOne, setAllowOne] = useState(false); // Allow one in operands
+  const [multipleChoice, setMultipleChoice] = useState(false); // Enable multiple choice questions
+  const [showBoxes, setShowBoxes] = useState(false); // Show surrounding boxes around questions
+  const [showAnswers, setShowAnswers] = useState(false); // Print answer sheet page at the end
+
+  // ====== Utility Functions ======
+
+  // Generates a unique list of problems based on filters and type
   const generateProblems = () => {
     const problems = [];
-    const seen = new Set(); // Keep track of problems we've already seen to avoid duplicates
+    const seen = new Set(); // Prevent duplicate problems
     const ops = {
       addition: '+',
       subtraction: '-',
@@ -34,16 +40,16 @@ export default function MathWorksheetGenerator() {
       let a = Math.floor(Math.random() * (maxNumber + 1));
       let b = Math.floor(Math.random() * (maxNumber + 1));
 
-      // Apply zero and one filters
+      // Skip invalid entries based on zero and one filters
       if (!allowZero && (a === 0 || b === 0)) continue;
       if (!allowOne && (a === 1 || b === 1)) continue;
 
-      // Ensure subtraction results are non-negative
+      // Handle subtraction filtering
       if (operation === 'subtraction' && !allowNegatives && a < b) {
         [a, b] = [b, a];
       }
 
-      // Ensure whole number division
+      // Handle division filtering
       if (operation === 'division') {
         b = Math.max(1, b);
         if (wholeDivision) {
@@ -51,7 +57,7 @@ export default function MathWorksheetGenerator() {
         }
       }
 
-      // Avoid duplicates and filter invalid results
+      // Only store unique problems and skip trivial (e.g., answer = 1)
       if (a !== 0 && (allowOne == true || (correctAnswer({ a, b, op: ops[operation] }) !== 1))) {
         const key = `${a}${ops[operation]}${b}`;
         if (seen.has(key)) {
@@ -67,7 +73,7 @@ export default function MathWorksheetGenerator() {
     return problems;
   };
 
-  // Generate 4 answer choices: 1 correct and 3 distractors
+  // Generates a list of 4 choices (1 correct + 3 distractors)
   const generateChoices = (correct) => {
     const choices = new Set([correct]);
     while (choices.size < 4) {
@@ -80,7 +86,7 @@ export default function MathWorksheetGenerator() {
     return Array.from(choices).sort((a, b) => a - b);
   };
 
-  // Add header (name/date/score) to the PDF page
+  // Renders the worksheet header: Name, Date, Score
   const addPageHeader = (doc) => {
     doc.setFontSize(12);
     doc.text('Name: ________________________', 20, 20);
@@ -88,20 +94,20 @@ export default function MathWorksheetGenerator() {
     doc.text(`Score: ______ / ${numQuestions}`, 20, 30);
   };
 
-  // Evaluate the correct answer for a given problem
-  const correctAnswer = (p) =>{
+  // Calculates the actual result of a problem
+  const correctAnswer = (p) => {
     return eval(`${p.a} ${p.op === '×' ? '*' : p.op === '÷' ? '/' : p.op} ${p.b}`);
   }
 
-  // Generate and render the PDF
+  // Generates and renders the worksheet PDF
   const generatePDF = () => {
     const doc = new jsPDF();
     const problems = generateProblems();
-    const colCount = 3;
+    const colCount = 3; // Number of columns on the page
     const pageWidth = 190;
     const marginX = 20;
     const colWidth = (pageWidth - marginX) / colCount;
-    const rowHeight = multipleChoice ? 60: 50;
+    const rowHeight = multipleChoice ? 60 : 50;
     let xStart = marginX;
     let yStart = 45;
     let x = xStart;
@@ -109,8 +115,9 @@ export default function MathWorksheetGenerator() {
 
     addPageHeader(doc);
 
+    // Render each math problem
     problems.forEach((p, i) => {
-      // Start a new page if we run out of space
+      // Start new page if needed
       if (y > 250) {
         doc.addPage();
         addPageHeader(doc);
@@ -122,37 +129,37 @@ export default function MathWorksheetGenerator() {
       const bStr = `${p.op} ${p.b}`;
       const answer = correctAnswer(p);
 
-      // Draw the stacked problem
+      // Print problem layout
       doc.setFontSize(14);
       doc.text(`${i + 1}.`, x, y);
       doc.text(aStr, x + 20, y, { align: 'right' });
       doc.text(bStr, x + 20, y + 7, { align: 'right' });
-      doc.line(x + 8, y + 10, x + colWidth - 30, y + 10);
+      doc.line(x + 8, y + 10, x + colWidth - 30, y + 10); // Answer line
 
-      // Show boxes around questions
-      if(showBoxes){
+      // Optional boxed layout
+      if (showBoxes) {
         const yOffset = 7;
-        const xOffset = 5
-        doc.line(x - xOffset, y - yOffset, x + colWidth - + xOffset, y - yOffset);
-        doc.line(x + colWidth - xOffset, y - yOffset, x + colWidth - xOffset, y + rowHeight - yOffset );
-        doc.line(x + colWidth - xOffset, y + rowHeight - yOffset, x - xOffset, y + rowHeight - yOffset );
-        doc.line(x - xOffset, y + rowHeight - yOffset , x - xOffset, y - yOffset);
+        const xOffset = 5;
+        doc.line(x - xOffset, y - yOffset, x + colWidth - xOffset, y - yOffset);
+        doc.line(x + colWidth - xOffset, y - yOffset, x + colWidth - xOffset, y + rowHeight - yOffset);
+        doc.line(x + colWidth - xOffset, y + rowHeight - yOffset, x - xOffset, y + rowHeight - yOffset);
+        doc.line(x - xOffset, y + rowHeight - yOffset, x - xOffset, y - yOffset);
       }
 
-      // Draw multiple choice options with bubbles
+      // Render multiple choice options if enabled
       if (multipleChoice) {
         const choices = generateChoices(answer);
         const labels = ['A', 'B', 'C', 'D'];
-       
+
         choices.forEach((choice, idx) => {
           const bubbleX = x + 10;
           const bubbleY = y + 25 + idx * 7;
-          doc.circle(bubbleX, bubbleY, 2);
+          doc.circle(bubbleX, bubbleY, 2); // Draw bubble
           doc.text(`${labels[idx]}. ${choice}`, bubbleX + 6, bubbleY + 1.5);
         });
       }
 
-      // Move to next column or row
+      // Advance position
       x += colWidth;
       if (x + colWidth > pageWidth) {
         x = xStart;
@@ -160,20 +167,35 @@ export default function MathWorksheetGenerator() {
       }
     });
 
-    doc.save('math-worksheet.pdf');
+    // Render answer sheet if enabled
+    if (showAnswers) {
+      doc.addPage();
+      doc.setFontSize(16);
+      doc.text('Answer Sheet', 20, 20);
+      doc.setFontSize(12);
+
+      problems.forEach((p, i) => {
+        const answer = correctAnswer(p);
+        doc.text(`${i + 1}. ${answer}`, 20, 30 + i * 8);
+      });
+    }
+
+    doc.save('math-worksheet.pdf'); // Trigger file download
   };
 
+  // ====== UI Rendering ======
   return (
     <div className="p-6 max-w-xl mx-auto space-y-4">
       <h1 className="text-2xl font-bold text-center">Math Worksheet Generator</h1>
       <Card>
         <CardContent className="space-y-4 p-4">
-          {/* Form controls for worksheet customization */}
+          {/* Input: Number of Questions */}
           <div>
             <label className="block font-medium">Number of Questions</label>
             <Input type="number" value={numQuestions} onChange={(e) => setNumQuestions(Number(e.target.value))} min={1} />
           </div>
 
+          {/* Input: Operation Type */}
           <div>
             <label className="block font-medium mb-1">Operation</label>
             <RadioGroup value={operation} onValueChange={setOperation} className="space-y-2">
@@ -184,7 +206,7 @@ export default function MathWorksheetGenerator() {
             </RadioGroup>
           </div>
 
-          {/* Toggles for operation-specific settings */}
+          {/* Conditional toggles for additional settings */}
           {operation === 'subtraction' && (
             <div className="flex items-center">
               <Switch checked={allowNegatives} onCheckedChange={setAllowNegatives} />
@@ -199,7 +221,7 @@ export default function MathWorksheetGenerator() {
             </div>
           )}
 
-          {/* General problem filters */}
+          {/* General toggles */}
           <div className="flex items-center">
             <Switch checked={allowZero} onCheckedChange={setAllowZero} />
             <label className="font-medium">Allow Zeros in Problems</label>
@@ -220,12 +242,18 @@ export default function MathWorksheetGenerator() {
             <label className="font-medium">Show Boxes</label>
           </div>
 
+          <div className="flex items-center">
+            <Switch checked={showAnswers} onCheckedChange={setShowAnswers} />
+            <label className="font-medium">Show Answer Sheet</label>
+          </div>
+
+          {/* Input: Maximum Number */}
           <div>
             <label className="block font-medium">Largest Number</label>
             <Input type="number" value={maxNumber} onChange={(e) => setMaxNumber(Number(e.target.value))} min={1} />
           </div>
 
-          {/* Trigger PDF generation */}
+          {/* Generate PDF button */}
           <Button onClick={generatePDF}>Generate PDF</Button>
         </CardContent>
       </Card>

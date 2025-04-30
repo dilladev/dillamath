@@ -80,11 +80,11 @@ export default function MathWorksheetGenerator() {
     return Array.from(choices).sort((a, b) => a - b);
   };
 
-  const addPageHeader = (doc: jsPDF) => {
+  const addPageHeader = (doc: jsPDF, actualCount: number) => {
     doc.setFontSize(12);
     doc.text('Name: ________________________', 20, 20);
     doc.text(`Date: ____________`, 150, 20);
-    doc.text(`Score: ______ / ${numQuestions}`, 20, 30);
+    doc.text(`Score: ______ / ${actualCount}`, 20, 30);
   };
 
   const correctAnswer = (p: { a: number; b: number; op: string }) => {
@@ -94,6 +94,7 @@ export default function MathWorksheetGenerator() {
   const generatePDF = () => {
     const doc = new jsPDF();
     const problems = generateProblems();
+    const actualCount = problems.length;
     const colCount = 5;
     const pageWidth = 190;
     const marginX = 20;
@@ -104,12 +105,12 @@ export default function MathWorksheetGenerator() {
     let x = xStart;
     let y = yStart;
 
-    addPageHeader(doc);
+    addPageHeader(doc, actualCount);
 
     problems.forEach((p, i) => {
       if (y > 250) {
         doc.addPage();
-        addPageHeader(doc);
+        addPageHeader(doc,actualCount);
         y = yStart;
         x = xStart;
       }
@@ -188,33 +189,33 @@ export default function MathWorksheetGenerator() {
           </div>
 
           {operation === 'multiplication' && (
-            <div>
-              <label className="block font-medium mb-1">Multiplication Facts</label>
-              <div className="grid grid-cols-4 gap-2">
-                {[...Array(11)].map((_, i) => {
-                  const fact = i + 2;
-                  const isSelected = multiplicationFacts.includes(fact);
-                  return (
-                    <label key={fact} className="flex items-center space-x-1">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => {
-                          setMultiplicationFacts((prev) =>
-                            e.target.checked
-                              ? [...prev, fact]
-                              : prev.filter((f) => f !== fact)
-                          );
-                        }}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span>{fact}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+  <div>
+    <label className="block font-medium mb-1">Multiplication Facts</label>
+    <div className="grid grid-cols-4 gap-2">
+      {[...Array(11)].map((_, i) => {
+        const fact = i + 2;
+        const isSelected = multiplicationFacts.includes(fact);
+        return (
+          <label key={fact} className="flex items-center space-x-1">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={(e) => {
+                setMultiplicationFacts((prev) =>
+                  e.target.checked
+                    ? [...prev, fact]
+                    : prev.filter((f) => f !== fact)
+                );
+              }}
+              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span>{fact}</span>
+          </label>
+        );
+      })}
+    </div>
+  </div>
+)}
 
 
           <div className="flex items-center">

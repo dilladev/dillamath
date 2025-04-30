@@ -4,6 +4,7 @@ import { Input } from './components/ui/input';
 import { Card, CardContent } from './components/ui/card';
 import { RadioGroup, RadioGroupItem } from './components/ui/radio-group';
 import { Switch } from './components/ui/switch';
+import { SmallSwitch } from './components/ui/switch-small';
 import jsPDF from 'jspdf';
 
 export default function MathWorksheetGenerator() {
@@ -191,29 +192,27 @@ export default function MathWorksheetGenerator() {
           {operation === 'multiplication' && (
   <div>
     <label className="block font-medium mb-1">Multiplication Facts</label>
+    <hr className="border-t border-gray-300 mb-2 mt-2" />
     <div className="grid grid-cols-4 gap-2">
       {[...Array(11)].map((_, i) => {
         const fact = i + 2;
         const isSelected = multiplicationFacts.includes(fact);
         return (
           <label key={fact} className="flex items-center space-x-1">
-            <input
-              type="checkbox"
+            <SmallSwitch
               checked={isSelected}
-              onChange={(e) => {
+              onCheckedChange={(checked) => {
                 setMultiplicationFacts((prev) =>
-                  e.target.checked
-                    ? [...prev, fact]
-                    : prev.filter((f) => f !== fact)
+                  checked ? [...prev, fact] : prev.filter((f) => f !== fact)
                 );
               }}
-              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <span>{fact}</span>
           </label>
         );
       })}
     </div>
+    <hr className="border-t border-gray-300 mb-2 mt-2" />
   </div>
 )}
 
@@ -223,10 +222,12 @@ export default function MathWorksheetGenerator() {
             <label className="font-medium ml-2">Allow Negative Answers</label>
           </div>
 
-          <div className="flex items-center">
-            <Switch checked={wholeDivision} onCheckedChange={setWholeDivision} />
-            <label className="font-medium ml-2">Whole Number Division Only</label>
-          </div>
+          {operation === 'division' && (
+            <div className="flex items-center">
+              <Switch checked={wholeDivision} onCheckedChange={setWholeDivision} />
+              <label className="font-medium ml-2">Whole Number Division Only</label>
+            </div>
+          )}
 
           <div className="flex items-center">
             <Switch checked={allowZero} onCheckedChange={setAllowZero} />

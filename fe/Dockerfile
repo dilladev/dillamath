@@ -1,4 +1,6 @@
 FROM node:20-alpine AS builder
+ARG VITE_BASE=/
+ENV VITE_BASE=${VITE_BASE}
 
 WORKDIR /app
 

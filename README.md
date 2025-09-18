@@ -58,3 +58,38 @@ npm run build
 
 ## 📄 License
 MIT License
+## Build Docker Image
+`docker build -t dilladev-math-fe:latest .`
+
+## Tag Docker Image
+`docker tag dilladev-math-fe:latest dilladev.azurecr.io/dilladev-math-fe:latest`
+
+## Push Docker Image to Docker Hub
+`docker push dilladev.azurecr.io/dilladev-math-fe:latest`
+
+```
+docker build -t dilladev-math-fe:latest .
+docker tag dilladev-math-fe:latest dilladev.azurecr.io/dilladev-math-fe:latest
+docker push dilladev.azurecr.io/dilladev-math-fe:latest
+```
+
+## Build Docker Image
+`docker build -t dilladev-math-be:latest .`
+
+## Tag Docker Image
+`docker tag dilladev-math-be:latest dilladev.azurecr.io/dilladev-math-be:latest`
+
+## Push Docker Image to Docker Hub
+`docker push dilladev.azurecr.io/dilladev-math-be:latest`
+
+```
+docker build -t dilladev-math-be:latest .
+docker tag dilladev-math-be:latest dilladev.azurecr.io/dilladev-math-be:latest
+docker push dilladev.azurecr.io/dilladev-math-be:latest
+```
+
+```
+docker build -t dilladev-math-base-fe:latest --build-arg VITE_BASE=/math/ . 
+docker tag dilladev-math-base-fe:latest dilladev.azurecr.io/dilladev-math-base-fe:latest
+docker push dilladev.azurecr.io/dilladev-math-base-fe:latest
+```
